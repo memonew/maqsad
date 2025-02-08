@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MaQsaD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #FF0080, #7928CA);
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            color: white;
+            font-size: 2rem;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 2rem;
+            border: none;
+            border-radius: 25px;
+            background-color: #FF0080;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #CC0066;
+        }
+
+        #user-info {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #user-info h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        #user-info p {
+            margin: 0.5rem 0;
+            color: #666;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>MaQsaD</h1>
+        <button onclick="handleLogout()" class="logout-btn">Logout</button>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="welcome-message">
+            <h2>Welcome to your Dashboard</h2>
+            <p>Your account details are displayed below</p>
+        </div>
+        <div id="user-info">Loading...</div>
+    </div>
+
+    <script>
+        async function checkAuth() {
+            try {
+                const response = await fetch('auth/check.php');
+                const data = await response.json();
+                
+                if (!data.authenticated) {
+                    window.location.href = 'project1.html';
+                } else {
+                    document.getElementById('user-info').innerHTML = `
+                        <h3>User Details</h3>
+                        <p><strong>Username:</strong> ${data.username}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Role:</strong> ${data.role}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = 'project1.html';
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch('auth/logout.php');
+                window.location.href = 'project1.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error logging out');
+            }
+        }
+
+        // Check authentication when page loads
+        checkAuth();
+    </script>
+</body>
+</html>
